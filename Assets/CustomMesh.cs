@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CustomMesh
 {
@@ -85,6 +86,33 @@ public class CustomMesh
         Position = Vector3.zero;
         Rotation = Vector3.zero;
         Scale = Vector3.one;
+    }
+
+    // based on https://www.desmos.com/3d/v6fxs4thwt
+    public static CustomMesh Sphere(int vertRes, int radRes)
+    {
+        Vector3[] vertices = new Vector3[radRes * (vertRes - 2) + 2];
+        (int,int,int)[] triangles = new (int,int,int)[];
+
+        int i = 0;
+        for(int V = 1; V < vertRes; V++)
+        {
+            float v = V * Mathf.TAU / vertRes;
+            float sinV = Mathf.Sin(v / 2f);
+            float cosV = Mathf.Cos(v / 2f);
+
+            for(int R = 0; R <= radRes; R++)
+            {
+                float r = R * Mathf.TAU / radRes;
+                vertices[i] = new Vector3(sinV * Mathf.Sin(r), sinV * Mathf.Cos(r), -cosV);
+                i++;
+            }
+        }
+
+        // PUT IN TRIANGLE CODE!!!!!
+        throw new System.Exception("PUT IN TRIANGLE CODE YOU MORON");
+
+        return new CustomMesh(vertices, triangles);
     }
 
     public static CustomMesh Cube = new CustomMesh(
