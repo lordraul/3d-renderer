@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CustomMeshRenderer : MonoBehaviour
 {
-    public CustomMesh Mesh = CustomMesh.Cube;
+    public CustomMesh Mesh;
     public Shader Shader = new UnlitShader(Color.white);
     public Vector3 position;
     public Vector3 rotation;
@@ -10,6 +10,7 @@ public class CustomMeshRenderer : MonoBehaviour
 
     void Start()
     {
+        Mesh = CustomMesh.Sphere(8, 16);
         RenderEngine.Instance.QueueRender(this);
     }
 

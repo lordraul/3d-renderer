@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class CustomMesh
 {
@@ -91,40 +91,43 @@ public class CustomMesh
     // based on https://www.desmos.com/3d/v6fxs4thwt
     public static CustomMesh Sphere(int vertRes, int radRes)
     {
-        Vector3[] vertices = new Vector3[radRes * (vertRes - 2) + 2];
-        (int,int,int)[] triangles = new (int,int,int)[];
+        List<VertexData> vertices = new List<VertexData>();
+        List<(int,int,int)> triangles = new List<(int,int,int)>();
 
-        int i = 0;
         for(int V = 1; V < vertRes; V++)
         {
-            float v = V * Mathf.TAU / vertRes;
+            float v = V * 2 * Mathf.PI / vertRes;
             float sinV = Mathf.Sin(v / 2f);
             float cosV = Mathf.Cos(v / 2f);
 
             for(int R = 0; R <= radRes; R++)
             {
-                float r = R * Mathf.TAU / radRes;
-                vertices[i] = new Vector3(sinV * Mathf.Sin(r), sinV * Mathf.Cos(r), -cosV);
-                i++;
+                float r = R * 2 * Mathf.PI / radRes;
+                vertices.Add(new VertexData(new Vector3(sinV * Mathf.Sin(r), sinV * Mathf.Cos(r), -cosV), new Vector3(), new Color(1f, 1f, 1f)));
             }
         }
 
-        // PUT IN TRIANGLE CODE!!!!!
-        throw new System.Exception("PUT IN TRIANGLE CODE YOU MORON");
+        for(int v = 0; v < vertRes - 2; v++)
+        {
+            for(int r = 0; r < radRes; r++)
+            {
+                triangles.Add((r + v * radRes, (r + 1) % radRes + v * radRes, r + radRes * (v + 1)));
+            }
+        }
 
-        return new CustomMesh(vertices, triangles);
+        return new CustomMesh(vertices.ToArray(), triangles.ToArray());
     }
 
     public static CustomMesh Cube = new CustomMesh(
         new VertexData[]{
-            new VertexData(new Vector3(+0.5f, +0.5f, +0.5f), new Vector3(), new Vector2(), new Color(1f, 1f, 1f)),
-            new VertexData(new Vector3(-0.5f, +0.5f, +0.5f), new Vector3(), new Vector2(), new Color(0f, 1f, 1f)),
-            new VertexData(new Vector3(-0.5f, -0.5f, +0.5f), new Vector3(), new Vector2(), new Color(0f, 0f, 1f)),
-            new VertexData(new Vector3(+0.5f, -0.5f, +0.5f), new Vector3(), new Vector2(), new Color(1f, 0f, 1f)),
-            new VertexData(new Vector3(+0.5f, +0.5f, -0.5f), new Vector3(), new Vector2(), new Color(1f, 1f, 0f)),
-            new VertexData(new Vector3(-0.5f, +0.5f, -0.5f), new Vector3(), new Vector2(), new Color(0f, 1f, 0f)),
-            new VertexData(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(), new Vector2(), new Color(0f, 0f, 0f)),
-            new VertexData(new Vector3(+0.5f, -0.5f, -0.5f), new Vector3(), new Vector2(), new Color(1f, 0f, 0f)),
+            new VertexData(new Vector3(+0.5f, +0.5f, +0.5f), new Vector3(), new Color(1f, 1f, 1f)),
+            new VertexData(new Vector3(-0.5f, +0.5f, +0.5f), new Vector3(), new Color(0f, 1f, 1f)),
+            new VertexData(new Vector3(-0.5f, -0.5f, +0.5f), new Vector3(), new Color(0f, 0f, 1f)),
+            new VertexData(new Vector3(+0.5f, -0.5f, +0.5f), new Vector3(), new Color(1f, 0f, 1f)),
+            new VertexData(new Vector3(+0.5f, +0.5f, -0.5f), new Vector3(), new Color(1f, 1f, 0f)),
+            new VertexData(new Vector3(-0.5f, +0.5f, -0.5f), new Vector3(), new Color(0f, 1f, 0f)),
+            new VertexData(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(), new Color(0f, 0f, 0f)),
+            new VertexData(new Vector3(+0.5f, -0.5f, -0.5f), new Vector3(), new Color(1f, 0f, 0f)),
         },
         new (int, int, int)[]{
             (0, 1, 5),
@@ -152,14 +155,12 @@ public class VertexData
 {
     public Vector3 Position { get; set; }
     public Vector3 Normal { get; set; }
-    public Vector2 UV { get; set; }
     public Color VertColor { get; set; }
 
-    public VertexData(Vector3 pos, Vector3 normal, Vector2 uv, Color color)
+    public VertexData(Vector3 pos, Vector3 normal, Color color)
     {
         Position = pos;
         Normal = normal;
-        UV = uv;
         VertColor = color;
     }
 }

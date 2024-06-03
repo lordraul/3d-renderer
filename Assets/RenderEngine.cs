@@ -87,6 +87,8 @@ public class RenderEngine : MonoBehaviour
 
             foreach(var (t1, t2, t3) in renderer.Mesh.triangles)
             {
+                print($"{interpolators.Length} = ({t1}, {t2}, {t3})");
+
                 Vector2 a = projections[t1];
                 Vector2 b = projections[t2];
                 Vector2 c = projections[t3];
