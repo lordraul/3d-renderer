@@ -73,9 +73,10 @@ public class RenderEngine : MonoBehaviour
 
     void RenderFrame()
     {
+        FrameBuffer = new Texture2D(Width, Height);
+
         foreach(CustomMeshRenderer renderer in RenderQueue)
         {
-
             v2f[] interpolators = new v2f[renderer.Mesh.vertices.Length];
             Vector2[] projections = new Vector2[renderer.Mesh.vertices.Length];
 
@@ -87,8 +88,6 @@ public class RenderEngine : MonoBehaviour
 
             foreach(var (t1, t2, t3) in renderer.Mesh.triangles)
             {
-                print($"{interpolators.Length} = ({t1}, {t2}, {t3})");
-
                 Vector2 a = projections[t1];
                 Vector2 b = projections[t2];
                 Vector2 c = projections[t3];

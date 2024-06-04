@@ -114,10 +114,10 @@ public class CustomMesh
         {
             for(int r = 0; r < radRes; r++)
             {
-                triangles.Add((r + v * radRes, (r + 1) % radRes + v * radRes, r + radRes * (v + 1)));
+                triangles.Add(((r + 1) % radRes + v * radRes, r + v * radRes, r + radRes * (v + 1)));
                 triangles.Add(((r + 1) % radRes + v * radRes, r + v * radRes, (r + 1) % radRes + radRes * (v + 1)));
-                triangles.Add(((r + 1) % radRes + vertices.Count - radRes - 2, r + vertices.Count - radRes - 2, vertices.Count - 2);
-                triangles.Add((r, (r + 1) % radRes, vertices.Count - 1);
+                triangles.Add(((r + 1) % radRes + vertices.Count - radRes - 2, r + vertices.Count - radRes - 2, vertices.Count - 2));
+                triangles.Add((r, (r + 1) % radRes, vertices.Count - 1));
             }
         }
 
