@@ -107,12 +107,46 @@ public class CustomMesh
             }
         }
 
+        vertices.Add(new VertexData(new Vector3(0, 0, 1), new Vector3(), new Color(1f, 1f, 1f)));
+        vertices.Add(new VertexData(new Vector3(0, 0, -1), new Vector3(), new Color(1f, 1f, 1f)));
+
         for(int v = 0; v < vertRes - 2; v++)
         {
             for(int r = 0; r < radRes; r++)
             {
                 triangles.Add((r + v * radRes, (r + 1) % radRes + v * radRes, r + radRes * (v + 1)));
+                triangles.Add(((r + 1) % radRes + v * radRes, r + v * radRes, (r + 1) % radRes + radRes * (v + 1)));
+                triangles.Add(((r + 1) % radRes + vertices.Count - radRes - 2, r + vertices.Count - radRes - 2, vertices.Count - 2);
+                triangles.Add((r, (r + 1) % radRes, vertices.Count - 1);
             }
+        }
+
+        var triNorms = new Vector3[triangles.Count];
+        for(int i = 0; i < triangles.Count; i++)
+        {
+            (int a, int b, int c) = triangles[i];
+            Vector3 v = vertices[b].Position - vertices[a].Position;
+            Vector3 w = vertices[c].Position - vertices[a].Position;
+
+            triNorms[i] = Vector3.Cross(v, w).normalized;
+        }
+
+        for(int i = 0; i < vertices.Count; i++)
+        {
+            Vector3 sumNormals = new Vector3();
+            int numNormals = 0;
+            for(int j = 0; j < triangles.Count; j++)
+            {
+                (int a, int b, int c) = triangles[j];
+                
+                if(a != i && b != i && c != i)
+                    continue;
+
+                sumNormals += triNorms[j];
+                numNormals++;
+            }
+            
+            vertices[i].Normal = sumNormals / numNormals;
         }
 
         return new CustomMesh(vertices.ToArray(), triangles.ToArray());
