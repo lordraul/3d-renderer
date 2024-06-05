@@ -42,6 +42,7 @@ public class RenderEngine : MonoBehaviour
         CreateTextures();
     }
 
+    // Render and display the frame every 'Unity frame'
     void Update()
     {
         RenderFrame();
@@ -50,6 +51,7 @@ public class RenderEngine : MonoBehaviour
         Frame.texture = FrameBuffer;
     }
 
+    // Make new blank textures for the frame and depth buffer
     void CreateTextures()
     {
         FrameBuffer = new Texture2D(Width, Height);
@@ -57,6 +59,7 @@ public class RenderEngine : MonoBehaviour
         DepthBuffer = new Texture2D(Width, Height);
     }
 
+    // Method called by CustomMeshRenderers in order to add them to the render queue
     public void QueueRender(CustomMeshRenderer renderer)
     {
         for(int i = 0; i < RenderQueue.Count; i++)
@@ -71,38 +74,53 @@ public class RenderEngine : MonoBehaviour
         RenderQueue.Add(renderer);
     }
 
+    // Draw the next frame
     void RenderFrame()
     {
+        // Clear the frame buffer before drawing the next frame
         FrameBuffer = new Texture2D(Width, Height);
 
+        // Foreach loop to draw each CustomMeshRenderer in the queue
         foreach(CustomMeshRenderer renderer in RenderQueue)
         {
+            // Init empty lists
             v2f[] interpolators = new v2f[renderer.Mesh.vertices.Length];
             Vector2[] projections = new Vector2[renderer.Mesh.vertices.Length];
 
+            // Iterate over each vertex in mesh
             for(int i = 0; i < renderer.Mesh.vertices.Length; i++)
             {
+                // Calculate the interpolator value via the renderer's Vertex Shader
                 interpolators[i] = renderer.Shader.vert(renderer.Mesh.vertices[i]);
+                // Project the vertex to a 2d point
                 projections[i] = ProjectVertex(renderer.Mesh.transformMatrix.MultiplyPoint3x4(interpolators[i].position));
             }
 
+            // Foreach 3 vertex indices of every triangle in the mesh
             foreach(var (t1, t2, t3) in renderer.Mesh.triangles)
             {
+                // Get projected points via indices
                 Vector2 a = projections[t1];
                 Vector2 b = projections[t2];
                 Vector2 c = projections[t3];
 
+                // Calculate triangle's edge function value (clockwise or counter-clockwise)
                 float abc = EdgeFunction(a, b, c);
 
+                // Discard current triangle if it is clockwise
                 if(abc > 0)
                     continue;
 
+                // Iterate over each pixel that is within the bounds of the triangle
                 foreach(var (x, y) in RasterizeTriangle(a, b, c))
                 {
+                    // Get barycentric coordinates of the current pixel in the triangle
                     Vector3 bary = Barycentric(a, b, c, x, y);
 
+                    // Calculate interpolator value by using the barycentric coordinates to interpolate the v2f values of the 3 vertices of the triangle
                     v2f interpolator = bary.x * interpolators[t1] + bary.y * interpolators[t2] + bary.z * interpolators[t3];
 
+                    // Set pixel of the frame buffer to the color returned by the renderer's Fragment Shader
                     FrameBuffer.SetPixel(x, y, renderer.Shader.frag(interpolator));
                 }
             }
