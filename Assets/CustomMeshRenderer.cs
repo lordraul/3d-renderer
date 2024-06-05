@@ -3,7 +3,7 @@ using UnityEngine;
 public class CustomMeshRenderer : MonoBehaviour
 {
     public CustomMesh Mesh;
-    public Shader Shader = new UnlitShader(Color.white);
+    public Shader Shader = new LambertianShader(new Vector3(1, 1, 1).normalized);
     public Vector3 position;
     public Vector3 rotation;
     public Vector3 scale = Vector3.one;

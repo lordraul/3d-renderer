@@ -88,7 +88,6 @@ public class CustomMesh
         Scale = Vector3.one;
     }
 
-    // based on https://www.desmos.com/3d/v6fxs4thwt
     public static CustomMesh Sphere(int vertRes, int radRes)
     {
         List<VertexData> vertices = new List<VertexData>();
@@ -100,7 +99,7 @@ public class CustomMesh
             float sinV = Mathf.Sin(v / 2f);
             float cosV = Mathf.Cos(v / 2f);
 
-            for(int R = 0; R <= radRes; R++)
+            for(int R = 0; R < radRes; R++)
             {
                 float r = R * 2 * Mathf.PI / radRes;
                 vertices.Add(new VertexData(new Vector3(sinV * Mathf.Sin(r), sinV * Mathf.Cos(r), -cosV), new Vector3(), new Color(1f, 1f, 1f)));
@@ -115,7 +114,7 @@ public class CustomMesh
             for(int r = 0; r < radRes; r++)
             {
                 triangles.Add(((r + 1) % radRes + v * radRes, r + v * radRes, r + radRes * (v + 1)));
-                triangles.Add(((r + 1) % radRes + v * radRes, r + v * radRes, (r + 1) % radRes + radRes * (v + 1)));
+                triangles.Add(((r + 1) % radRes + v * radRes, r + radRes * (v + 1), (r + 1) % radRes + radRes * (v + 1)));
                 triangles.Add(((r + 1) % radRes + vertices.Count - radRes - 2, r + vertices.Count - radRes - 2, vertices.Count - 2));
                 triangles.Add((r, (r + 1) % radRes, vertices.Count - 1));
             }
@@ -154,14 +153,14 @@ public class CustomMesh
 
     public static CustomMesh Cube = new CustomMesh(
         new VertexData[]{
-            new VertexData(new Vector3(+0.5f, +0.5f, +0.5f), new Vector3(), new Color(1f, 1f, 1f)),
-            new VertexData(new Vector3(-0.5f, +0.5f, +0.5f), new Vector3(), new Color(0f, 1f, 1f)),
-            new VertexData(new Vector3(-0.5f, -0.5f, +0.5f), new Vector3(), new Color(0f, 0f, 1f)),
-            new VertexData(new Vector3(+0.5f, -0.5f, +0.5f), new Vector3(), new Color(1f, 0f, 1f)),
-            new VertexData(new Vector3(+0.5f, +0.5f, -0.5f), new Vector3(), new Color(1f, 1f, 0f)),
-            new VertexData(new Vector3(-0.5f, +0.5f, -0.5f), new Vector3(), new Color(0f, 1f, 0f)),
-            new VertexData(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(), new Color(0f, 0f, 0f)),
-            new VertexData(new Vector3(+0.5f, -0.5f, -0.5f), new Vector3(), new Color(1f, 0f, 0f)),
+            new VertexData(new Vector3(+0.5f, +0.5f, +0.5f), new Vector3(1, 1, 1), new Color(1f, 1f, 1f)),
+            new VertexData(new Vector3(-0.5f, +0.5f, +0.5f), new Vector3(-1, 1, 1), new Color(0f, 1f, 1f)),
+            new VertexData(new Vector3(-0.5f, -0.5f, +0.5f), new Vector3(-1, -1, 1), new Color(0f, 0f, 1f)),
+            new VertexData(new Vector3(+0.5f, -0.5f, +0.5f), new Vector3(1, -1, 1), new Color(1f, 0f, 1f)),
+            new VertexData(new Vector3(+0.5f, +0.5f, -0.5f), new Vector3(1, 1, -1), new Color(1f, 1f, 0f)),
+            new VertexData(new Vector3(-0.5f, +0.5f, -0.5f), new Vector3(-1, 1, -1), new Color(0f, 1f, 0f)),
+            new VertexData(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(-1, -1, -1), new Color(0f, 0f, 0f)),
+            new VertexData(new Vector3(+0.5f, -0.5f, -0.5f), new Vector3(1, -1, -1), new Color(1f, 0f, 0f)),
         },
         new (int, int, int)[]{
             (0, 1, 5),
